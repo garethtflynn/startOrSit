@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Fantasy team data
+  teams Team[]
+}
+
+model Team {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  leagueId String
+  userId   String @db.ObjectId
+  user     User   @relation(fields: [userId], references: [id])
+
+  // Roster data
+  players Player[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Player {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  playerId String // Sleeper player ID
+  name     String
+  position String
+  team     String // NFL team
+
+  // Fantasy data
+  projectedPoints Float?
+  averagePoints   Float?
+  lastWeekPoints  Float?
+  injuryStatus    String?
+
+  // Relationships
+  teamId      String? @db.ObjectId
+  fantasyTeam Team?   @relation(fields: [teamId], references: [id])
+
+  // AI recommendations
+  recommendations Recommendation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([playerId])
+}
+
+model Recommendation {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  playerId String @db.ObjectId
+  player   Player @relation(fields: [playerId], references: [id])
+
+  week       Int
+  year       Int
+  action     String // "START", "SIT", "FLEX"
+  confidence Float // 0-1
+  reasoning  String
+
+  // Factors considered
+  matchup  String?
+  weather  String?
+  injuries String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([playerId, week, year])
+}
