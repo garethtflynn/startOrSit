@@ -20,7 +20,7 @@ export default function HomePage() {
               Compare Players Now
             </Link>
             <Link 
-              href="/auth/signin"
+              href="/auth/sign-in"
               className="bg-white hover:bg-gray-50 text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg font-medium text-lg transition-colors"
             >
               Sign In
@@ -28,7 +28,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Feature highlights */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">
           <div className="text-center p-6">
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">

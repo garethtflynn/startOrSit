@@ -12,7 +12,6 @@ export async function POST(request) {
       );
     }
 
-    // Create detailed prompt for OpenAI
     const playersInfo = players
       .map(
         (p, i) => `
@@ -24,7 +23,7 @@ Player ${i + 1}: ${p.name}
       .join("\n");
 
     const userPrompt = `
-Week ${week} ${year} start/sit decision:
+Week ${week} this season, ${year}, start/sit decision:
 
 ${playersInfo}
 

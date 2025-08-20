@@ -1,9 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// MongoDB Prisma Schema
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,74 +8,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Fantasy team data
-  teams Team[]
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  accounts      Account[]
+  sessions      Session[]
+  searches      SearchHistory[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
-model Team {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  leagueId String
-  userId   String @db.ObjectId
-  user     User   @relation(fields: [userId], references: [id])
+model SearchHistory {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @db.ObjectId
+  players        Json
+  week           Int
+  year           Int
+  recommendation String
+  createdAt      DateTime @default(now())
 
-  // Roster data
-  players Player[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Player {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  playerId String // Sleeper player ID
-  name     String
-  position String
-  team     String // NFL team
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-  // Fantasy data
-  projectedPoints Float?
-  averagePoints   Float?
-  lastWeekPoints  Float?
-  injuryStatus    String?
-
-  // Relationships
-  teamId      String? @db.ObjectId
-  fantasyTeam Team?   @relation(fields: [teamId], references: [id])
-
-  // AI recommendations
-  recommendations Recommendation[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([playerId])
-}
-
-model Recommendation {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  playerId String @db.ObjectId
-  player   Player @relation(fields: [playerId], references: [id])
-
-  week       Int
-  year       Int
-  action     String // "START", "SIT", "FLEX"
-  confidence Float // 0-1
-  reasoning  String
-
-  // Factors considered
-  matchup  String?
-  weather  String?
-  injuries String?
-
-  createdAt DateTime @default(now())
-
-  @@unique([playerId, week, year])
+  @@unique([identifier, token])
 }
