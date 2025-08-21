@@ -36,7 +36,7 @@ Be decisive and concise.
 
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini", // Updated to a better model
+        model: "gpt-4o-mini", 
         messages: [
           {
             role: "system",

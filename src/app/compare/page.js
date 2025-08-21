@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import RecommendationResult from "../components/RecommendationResult";
 
 function ComparePage() {
   const { data: session, status } = useSession();
@@ -20,13 +21,13 @@ function ComparePage() {
       id: Math.random().toString(36),
       name: "",
       team: "",
-      position: "RB",
+      position: "QB",
     },
     {
       id: Math.random().toString(36),
       name: "",
       team: "",
-      position: "RB",
+      position: "QB",
     },
   ]);
   const [recommendation, setRecommendation] = useState(null);
@@ -62,44 +63,6 @@ function ComparePage() {
     );
     setRecommendation(null);
   };
-
-  // const getRecommendation = async () => {
-  //   if (players.length < 2) {
-  //     alert("Please add at least 2 players to compare");
-  //     return;
-  //   }
-
-  //   if (players.some((p) => !p.name.trim())) {
-  //     alert("Please enter names for all players");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await fetch("/api/recommendation", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         players,
-  //         week,
-  //         year: 2025,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to get recommendation");
-  //     }
-
-  //     const data = await response.json();
-  //     setRecommendation(data);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("Failed to get AI recommendation. Please try again.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const loadSearchHistory = async () => {
     try {
@@ -167,30 +130,10 @@ function ComparePage() {
     }
   };
 
-  // const saveSearch = async () => {
-  //   try {
-  //     const res = await fetch("/api/search-history", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ players, week, year, recommendation }),
-  //     });
-  //     if (!res.ok) {
-  //       const error = await res.json();
-  //       throw new Error(error.error || "Failed to save search");
-  //     }
-  //     return await res.json();
-  //   } catch (error) {
-  //     console.error("Error saving search:", err);
-  //     return null;
-  //   }
-  // };
-
   const positions = ["QB", "RB", "WR", "TE", "K", "DEF"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-4 px-3 sm:py-8 sm:px-4">
+    <div className="min-h-screen bg-white py-4 px-3 sm:py-8 sm:px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -238,8 +181,7 @@ function ComparePage() {
           </p>
           {session && (
             <p className="text-sm text-green-600 mt-2">
-              Welcome back, {session.user.username}! Your searches will be saved
-              to history.
+              Welcome back, {session.user.username}!
             </p>
           )}
         </div>
@@ -431,19 +373,7 @@ function ComparePage() {
         )}
 
         {recommendation && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              AI Recommendation
-            </h2>
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6">
-              <div className="prose max-w-none">
-                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
-                  {recommendation.recommendation ||
-                    "No recommendation available"}
-                </p>
-              </div>
-            </div>
-          </div>
+          <RecommendationResult recommendation={recommendation} />
         )}
       </div>
     </div>

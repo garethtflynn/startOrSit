@@ -41,7 +41,7 @@ function SignUpForm(props) {
           placeholder="username"
           autoComplete="off"
           onChange={(e) => setUsername(e.target.value)}
-          className="border border-[#D7CDBF] bg-transparent text-[#D7CDBF] px-2 py-1 my-1 rounded hover:bg-[#4C4138] focus:within:bg-[#D7CDBF] outline-none placeholder-[#4C4138]"
+          className="border-4 border-black bg-transparent text-white px-2 py-1 my-1 rounded focus:within:bg-[#D7CDBF] outline-none placeholder-zinc-700"
         />
         <input
           required
@@ -49,13 +49,13 @@ function SignUpForm(props) {
           name="password"
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
-          className="border border-[#D7CDBF] bg-transparent text-[#D7CDBF] px-2 py-1 rounded hover:bg-[#4C4138] focus:within:bg-[#D7CDBF] outline-none placeholder-[#4C4138]"
+          className="border-4 border-black bg-transparent text-white px-2 py-1 rounded focus:within:bg-[#D7CDBF] outline-none placeholder-zinc-700"
         />
         {/* {error && <Alert>{error}</Alert>} */}
         <div className="flex gap-2 justify-center">
           <button
             type="submit"
-            className="w-64 bg-[#D7CDBF] hover:bg-[#4C4138] text-[#000000] font-bold py-2 px-4 rounded-md duration-500"
+            className="w-64 bg-black hover:opacity-80 text-white font-bold py-2 px-4 rounded-md duration-500"
           >
             sign up
           </button>
