@@ -9,6 +9,7 @@ import {
   History,
   LogIn,
   LogOut,
+  Calendar,
 } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -57,7 +58,7 @@ function ComparePage() {
     }
   };
 
-  const updatePlayer = (id, field, value) => {
+  const handleChange = (id, field, value) => {
     setPlayers(
       players.map((p) => (p.id === id ? { ...p, [field]: value } : p))
     );
@@ -133,65 +134,47 @@ function ComparePage() {
   const positions = ["QB", "RB", "WR", "TE", "K", "DEF"];
 
   return (
-    <div className="min-h-screen bg-white py-4 px-3 sm:py-8 sm:px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center justify-center gap-2 sm:gap-3 flex-1">
-              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
-                Fantasy Football Analyzer
-              </h1>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {status === "loading" ? (
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-              ) : session ? (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={loadSearchHistory}
-                    className="flex items-center gap-1 px-3 py-2 bg-green-800 hover:bg-gray-200 rounded-lg transition-colors text-sm"
-                  >
-                    <History className="h-4 w-4" />
-                    <span className="hidden sm:inline">History</span>
-                  </button>
-                  <button
-                    onClick={() => signOut()}
-                    className="flex items-center gap-1 px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors text-sm"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden sm:inline">Sign Out</span>
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  href="/auth/sign-in"
-                  className="flex items-center gap-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm"
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 py-12 max-w-4xl">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Compare Players</h1>
+          <div className="flex items-center gap-3">
+            {status === "loading" ? (
+              <div className="w-8 h-8 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+            ) : session ? (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={loadSearchHistory}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-gray-100 rounded-lg border border-gray-300 hover:bg-gray-200 transition text-sm"
                 >
-                  <LogIn className="h-4 w-4" />
-                  Sign In
-                </Link>
-              )}
-            </div>
+                  <History className="h-4 w-4" />
+                  <span className="hidden sm:inline">History</span>
+                </button>
+
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-200 transition text-sm"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/auth/sign-in"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-200 transition text-sm"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Link>
+            )}
           </div>
-          <p className="text-sm sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
-            Compare NFL players and get AI-powered start/sit recommendations for
-            your fantasy lineup
-          </p>
-          {session && (
-            <p className="text-sm text-green-600 mt-2">
-              Welcome back, {session.user.username}!
-            </p>
-          )}
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-              Week Selection
-            </h2>
+            <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-gray-900" />
+            <h2 className="text-lg font-semibold text-gray-900">Select Week</h2>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <label htmlFor="week" className="text-sm font-medium text-gray-700">
@@ -201,7 +184,7 @@ function ComparePage() {
               id="week"
               value={week}
               onChange={(e) => setWeek(Number(e.target.value))}
-              className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-black"
+              className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none text-black"
             >
               {[...Array(18)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
@@ -212,21 +195,20 @@ function ComparePage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="h-5 w-5 text-gray-900" />
+              <h2 className="text-xl font-semibold text-gray-900">
                 Player Comparison
               </h2>
             </div>
             {players.length < 3 && (
               <button
                 onClick={addPlayer}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm sm:text-base w-full sm:w-auto"
+                className="bg-gray-100 text-gray-900 px-6 py-2 rounded-lg border border-gray-300 hover:bg-gray-200 transition text-sm"
               >
-                <Plus className="h-4 w-4" />
-                Add Player
+                + Add Player
               </button>
             )}
           </div>
@@ -235,67 +217,48 @@ function ComparePage() {
             {players.map((player, index) => (
               <div
                 key={player.id}
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition"
               >
-                <div className="flex items-center justify-center w-10 h-10 bg-blue-100 text-blue-600 font-semibold rounded-full">
+                <div className="flex items-center justify-center w-10 h-10 bg-gray-100 text-gray-900 font-semibold rounded-full">
                   {index + 1}
                 </div>
-
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 text-black">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Player Name
-                    </label>
-                    <input
-                      type="text"
-                      value={player.name}
-                      onChange={(e) =>
-                        updatePlayer(player.id, "name", e.target.value)
-                      }
-                      placeholder="e.g., Josh Allen"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-black"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Team
-                    </label>
-                    <input
-                      type="text"
-                      value={player.team}
-                      onChange={(e) =>
-                        updatePlayer(player.id, "team", e.target.value)
-                      }
-                      placeholder="e.g., BUF"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Position
-                    </label>
-                    <select
-                      value={player.position}
-                      onChange={(e) =>
-                        updatePlayer(player.id, "position", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    >
-                      {positions.map((pos) => (
-                        <option key={pos} value={pos}>
-                          {pos}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <input
+                    type="text"
+                    value={player.name}
+                    onChange={(e) =>
+                      handleChange(player.id, "name", e.target.value)
+                    }
+                    placeholder="Player Name"
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  />
+                  <input
+                    type="text"
+                    value={player.team}
+                    onChange={(e) =>
+                      handleChange(player.id, "team", e.target.value)
+                    }
+                    placeholder="Team"
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  />
+                  <select
+                    value={player.position}
+                    onChange={(e) =>
+                      handleChange(player.id, "position", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none text-black bg-white"
+                  >
+                    {positions.map((pos) => (
+                      <option key={pos} value={pos}>
+                        {pos}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-
                 {players.length > 2 && (
                   <button
                     onClick={() => removePlayer(player.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -308,21 +271,19 @@ function ComparePage() {
             <button
               onClick={handleRecommendation}
               disabled={loading || players.some((p) => !p.name.trim())}
-              className="w-full py-3.5 sm:py-3 px-6 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl text-base sm:text-base"
+              className="w-full py-3 bg-slate-800 text-white font-medium rounded-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
-              {loading ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Analyzing Players...
-                </div>
-              ) : (
-                "Get AI Recommendation"
-              )}
+              {loading ? "Analyzing..." : "Get AI Recommendation"}
             </button>
           </div>
         </div>
 
-        {/* Search History Modal */}
+        {recommendation && (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mt-6">
+            <RecommendationResult recommendation={recommendation} />
+          </div>
+        )}
+
         {showHistory && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
@@ -370,10 +331,6 @@ function ComparePage() {
               </div>
             </div>
           </div>
-        )}
-
-        {recommendation && (
-          <RecommendationResult recommendation={recommendation} />
         )}
       </div>
     </div>

@@ -40,7 +40,7 @@ function SignInForm(props) {
           placeholder="username"
           autoComplete="off"
           onChange={(e) => setUsername(e.target.value)}
-          className="border-4 border-black bg-transparent text-black px-2 py-1 my-1 rounded focus:within:bg-[#D7CDBF] outline-none placeholder-zinc-700"
+          className="border-2 border-black bg-transparent text-black px-2 py-1 my-1 rounded focus:within:bg-[#D7CDBF] outline-none placeholder-zinc-700"
         />
         <input
           type="password"
@@ -48,7 +48,7 @@ function SignInForm(props) {
           placeholder="password"
           autoComplete="off"
           onChange={(e) => setPassword(e.target.value)}
-          className="border-4 border-black bg-transparent text-black px-2 py-1 rounded focus:within:bg-[#D7CDBF] outline-none placeholder-zinc-700"
+          className="border-2 border-black bg-transparent text-black px-2 py-1 rounded focus:within:bg-[#D7CDBF] outline-none placeholder-zinc-700"
         />
         {/* {error && <Alert>{error}</Alert>} */}
         <div className="flex gap-2 justify-center">
